@@ -3,6 +3,8 @@ package com.example.loganalyzer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.core.io.ClassPathResource;
+import java.io.InputStreamReader;
 
 import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
@@ -17,7 +19,6 @@ import java.util.regex.Pattern;
 @Component
 public class LogLoader implements CommandLineRunner {
 
-    private static final String FILE = "C:/Users/PC/OneDrive/kaggle/access.log";
     private static final int MAX_LINES = 10000;
 
     // IP - - [date] "METHOD /path HTTP/1.1" status size
@@ -46,7 +47,8 @@ public class LogLoader implements CommandLineRunner {
         int saved = 0;
         int read = 0;
 
-        try (BufferedReader reader = Files.newBufferedReader(Path.of(FILE), StandardCharsets.ISO_8859_1)) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                new ClassPathResource("access-sample.log").getInputStream(), StandardCharsets.ISO_8859_1))) {
             String line;
             while ((line = reader.readLine()) != null && read < MAX_LINES) {
                 read++;
